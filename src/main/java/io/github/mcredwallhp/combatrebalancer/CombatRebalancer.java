@@ -18,11 +18,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public final class CombatRebalancer extends JavaPlugin implements Listener {
 	
 	
+	Double scalingFactor;
+	
 	
 	@Override
     public void onEnable() {
 		this.saveDefaultConfig();
 		this.getServer().getPluginManager().registerEvents(this, this);
+		this.scalingFactor = this.getConfig().getDouble("scalingFactor", 2);
     }
     
     
@@ -32,8 +35,6 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
-    	
-    	Double scalingFactor = this.getConfig().getDouble("scalingFactor");
     	
     	//Melee weapons to be nerfed
     	Material[] weaponsToNerf = {
@@ -62,7 +63,7 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
     	//Nerf melee weapons
     	if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
     		if (ArrayUtils.contains( weaponsToNerf, ((Player) e.getDamager()).getItemInHand().getType() )) {
-    			e.setDamage(e.getDamage()/scalingFactor);
+    			e.setDamage(e.getDamage()/this.scalingFactor);
     		}
     	}
     	
@@ -70,7 +71,7 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
     	if (e.getCause() == EntityDamageByEntityEvent.DamageCause.PROJECTILE) {
     		Arrow a = (Arrow) e.getDamager();
     		if (a.getShooter() instanceof Player) {
-    			e.setDamage(e.getDamage()/scalingFactor);
+    			e.setDamage(e.getDamage()/this.scalingFactor);
     		}
     	}
     	

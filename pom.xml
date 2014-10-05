@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.mcredwallhp</groupId>
   <artifactId>CombatRebalancer</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   
   <dependencies>
        <dependency>
@@ -19,9 +19,6 @@
 		<resource>
 			<directory>src/main/resources</directory>
 			<filtering>true</filtering>
-			<includes>
-				<include>plugin.yml</include>
-			</includes>
 		</resource>
 	</resources>
 </build>
