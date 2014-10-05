@@ -1,4 +1,4 @@
 name: CombatRebalancer
 main: io.github.mcredwallhp.combatrebalancer.CombatRebalancer
 description: Tweaks combat mechanics
-version: 0.0.1
+version: ${project.version}

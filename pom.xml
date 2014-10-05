@@ -2,14 +2,28 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.mcredwallhp</groupId>
   <artifactId>CombatRebalancer</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
+  
   <dependencies>
        <dependency>
            <groupId>org.bukkit</groupId>
            <artifactId>bukkit</artifactId>
-           <version>1.7.2-R0.3</version>
+           <version>1.7.9-R0.2</version>
            <type>jar</type>
            <scope>provided</scope>
        </dependency>
    </dependencies>
+   
+<build>
+	<resources>
+		<resource>
+			<directory>src/main/resources</directory>
+			<filtering>true</filtering>
+			<includes>
+				<include>plugin.yml</include>
+			</includes>
+		</resource>
+	</resources>
+</build>
+   
 </project>
