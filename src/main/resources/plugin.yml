@@ -2,3 +2,15 @@ name: CombatRebalancer
 main: io.github.mcredwallhp.combatrebalancer.CombatRebalancer
 description: Tweaks combat mechanics
 version: ${project.version}
+
+commands:
+   crdebug:
+      description: Toggle debug mode and print damage in chat
+      usage: /crdebug
+      permission: combatrebalancer.admin
+      permission-message: You don't have permission to do that.
+   crscale:
+      description: Get or set scaling factor.
+      usage: /crscale [2.0]
+      permission: combatrebalancer.admin
+      permission-message: You don't have permission to do that.
