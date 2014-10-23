@@ -1,6 +1,7 @@
 package io.github.mcredwallhp.combatrebalancer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -10,11 +11,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
 
 /*
  * TODO
@@ -23,17 +27,25 @@ import org.bukkit.command.CommandSender;
  */
 public final class CombatRebalancer extends JavaPlugin implements Listener {
 
+    
+    
     Double scalingFactor;
     List<String> playersInDebugMode;
+    Boolean tweakPlayerSpeed;
 
+    
+    
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         this.getServer().getPluginManager().registerEvents(this, this);
         this.scalingFactor = this.getConfig().getDouble("scalingFactor", 2);
         this.playersInDebugMode = new ArrayList<String>();
+        this.tweakPlayerSpeed = this.getConfig().getBoolean("tweakPlayerSpeed", false);
     }
 
+    
+    
     /*
      * Nerf weapon damage
      */
@@ -83,6 +95,8 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
 
     }
 
+    
+    
     /*
      * Command handler
      */
@@ -126,6 +140,8 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
 
     }
 
+    
+    
     /*
      * Flag a user to receive debug messages
      */
@@ -141,6 +157,7 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
 
     }
 
+    
     /*
      * Create and send debug messages to users flagged for debug
      */
@@ -171,5 +188,76 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
         }
 
     }
+    
+    
+    
+    /**
+     * Dynamic player speed adjustment
+     * Reimplementation of PwnPvpBalance's similar feature
+     * https://github.com/Pwn9/PwnPvpBalance/
+     */
+    @EventHandler
+    public void onPlayerMoveEvent(PlayerMoveEvent event) {
+        
+        if (this.tweakPlayerSpeed != true) return;
+        
+        World w = event.getPlayer().getWorld();
+        Player player = event.getPlayer();
+        
+        double playerWeight = 0;
+        HashMap<Material, Integer> armorWeights = new HashMap<Material, Integer>();
+        armorWeights.put(Material.LEATHER_HELMET, 1);
+        armorWeights.put(Material.GOLD_HELMET, 2);
+        armorWeights.put(Material.CHAINMAIL_HELMET, 2);
+        armorWeights.put(Material.IRON_HELMET, 3);
+        armorWeights.put(Material.DIAMOND_HELMET, 4);
+        armorWeights.put(Material.LEATHER_CHESTPLATE, 1);
+        armorWeights.put(Material.GOLD_CHESTPLATE, 2);
+        armorWeights.put(Material.CHAINMAIL_CHESTPLATE, 2);
+        armorWeights.put(Material.IRON_CHESTPLATE, 3);
+        armorWeights.put(Material.DIAMOND_CHESTPLATE, 4);
+        armorWeights.put(Material.LEATHER_LEGGINGS, 1);
+        armorWeights.put(Material.GOLD_LEGGINGS, 2);
+        armorWeights.put(Material.CHAINMAIL_LEGGINGS, 2);
+        armorWeights.put(Material.IRON_LEGGINGS, 3);
+        armorWeights.put(Material.DIAMOND_LEGGINGS, 4);
+        armorWeights.put(Material.LEATHER_BOOTS, 1);
+        armorWeights.put(Material.GOLD_BOOTS, 2);
+        armorWeights.put(Material.CHAINMAIL_BOOTS, 2);
+        armorWeights.put(Material.IRON_BOOTS, 3);
+        armorWeights.put(Material.DIAMOND_BOOTS, 4);
+        
+        ItemStack[] inventorySlots = {
+            player.getInventory().getHelmet(),
+            player.getInventory().getChestplate(),
+            player.getInventory().getLeggings(),
+            player.getInventory().getBoots()
+        };
+        
+        for (ItemStack slot : inventorySlots) {
+            if (slot == null) break;
+            if (armorWeights.containsKey(slot.getType())) {
+                playerWeight = playerWeight + armorWeights.get(slot.getType());
+            }
+        }
+        
+        double currentSpeed = player.getWalkSpeed();
+        int currentSpeedRounded = (int) Math.round(currentSpeed*1000);
+        double speedMod;
+        int speedModRounded;
+        if (playerWeight == 0) {
+            speedMod = (0.26f);
+            speedModRounded = (int) Math.round(speedMod*1000);
+        } else {
+            speedMod = (0.26 - ((playerWeight / 2) / 100));
+            speedModRounded = (int) Math.round(speedMod*1000);
+        }
+        if (speedModRounded != currentSpeedRounded) {
+            player.setWalkSpeed((float) speedMod);
+        }
+        
+    }
 
+    
+    
 }

@@ -2,3 +2,6 @@
 
 # How much to divide damage by
 scalingFactor: 2
+
+# Dynamically adjust player speed
+tweakPlayerSpeed: false
