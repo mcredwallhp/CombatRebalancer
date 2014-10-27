@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Fireball;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,6 +52,9 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
+        
+        // Fix exception from fireballs
+        if (e.getDamager() instanceof Fireball) return;
 
         // Melee weapons to be nerfed
         Material[] weaponsToNerf = {
