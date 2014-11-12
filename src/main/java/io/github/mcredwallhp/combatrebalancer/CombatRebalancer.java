@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Fireball;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,9 +51,6 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
      */
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
-        
-        // Fix exception from fireballs
-        if (e.getDamager() instanceof Fireball) return;
 
         // Melee weapons to be nerfed
         Material[] weaponsToNerf = {
@@ -90,7 +86,7 @@ public final class CombatRebalancer extends JavaPlugin implements Listener {
 
         // Nerf projectiles
         if ((e.getCause() == EntityDamageByEntityEvent.DamageCause.PROJECTILE) && (e.getEntity() instanceof Player)) {
-            Arrow a = (Arrow) e.getDamager();
+            Projectile a = (Projectile) e.getDamager();
             if (a.getShooter() instanceof Player) {
                 e.setDamage(e.getDamage() / this.scalingFactor);
                 this.sendDebugMessage(e);
